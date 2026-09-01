@@ -37,7 +37,7 @@ class Staff:
         self.reportsIgnored = int(reports_ignored)
 
     def to_string(self):
-        return "SteamID: "+str(self.steamID)+"\nCedmod Name: "+str(self.cedmodName)+"\nBans: "+str(self.bans)+" | Warns: "+str(self.warns)+"\nPlaytime: "+str(self.playtime)+"\nReports Handled: "+str(self.reportsHandled)+"\nReports Ignored: "+str(self.reportsIgnored)+"\nDays since last connection: TODO"
+        return "Name: "+str(self.name)+"\nSteamID: "+str(self.steamID)+"\nCedmod Name: "+str(self.cedmodName)+"\nBans: "+str(self.bans)+" | Warns: "+str(self.warns)+"\nPlaytime: "+str(self.playtime)+"\nReports Handled: "+str(self.reportsHandled)+"\nReports Ignored: "+str(self.reportsIgnored)+"\nDays since last connection: TODO"
 
     def __str__(self):
         return self.name
