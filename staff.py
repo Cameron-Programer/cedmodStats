@@ -6,7 +6,7 @@ class Staff:
 
     bans = -1
     warns = -1
-    playtime = -1
+    playtime = -1.1
     reportsHandled = -1
     reportsIgnored = -1
 
@@ -26,7 +26,7 @@ class Staff:
         self.warns = int(warns)
 
     def set_playtime(self, playtime):
-        self.playtime = int(playtime)
+        self.playtime = round(float(playtime),2)
 
 
     def set_reports_handled(self, reports_handled):
@@ -37,7 +37,7 @@ class Staff:
         self.reportsIgnored = int(reports_ignored)
 
     def to_string(self):
-        return "Name: "+str(self.name)+"\nSteamID: "+str(self.steamID)+"\nCedmod Name: "+str(self.cedmodName)+"\nBans: "+str(self.bans)+" | Warns: "+str(self.warns)+"\nPlaytime: "+str(self.playtime)+"\nReports Handled: "+str(self.reportsHandled)+"\nReports Ignored: "+str(self.reportsIgnored)+"\nDays since last connection: TODO"
+        return "Name: "+str(self.name)+"\nSteamID: "+str(self.steamID)+"\nCedmod Name: "+str(self.cedmodName)+"\nBans: "+str(self.bans)+" | Warns: "+str(self.warns)+"\nPlaytime (h): "+str(self.playtime)+"\nReports Handled: "+str(self.reportsHandled)+"\nReports Ignored: "+str(self.reportsIgnored)+"\nDays since last connection: TODO"
 
     def __str__(self):
         return self.name

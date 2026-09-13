@@ -35,6 +35,7 @@ def validate_query(max, q, page):
 
 
 def make_request(endpoint, queryDict=None):
+    print("API: Making request to endpoint: " + endpoint)
     # Endpoint validation
     if str(endpoint).lower().endswith("user"):
         # Making a request for a user endpoint will also result in the key being invalidated.
@@ -56,10 +57,11 @@ def make_request(endpoint, queryDict=None):
     responseJson = response.json()
 
     # Returning the Json response object
+    print("API: Finished request to endpoint: " + endpoint)
     return responseJson
 
 
-#Note: Get functions are very similar as such I will only explain the first one.
+# Note: Get functions are very similar as such I will only explain the first one.
 def get_bans(max=None, q=None, page=None):
     # Checking that the params are valid and if not setting them to defaults.
     max, q, page = validate_query(max=max, q=q, page=page)
@@ -76,7 +78,6 @@ def get_bans(max=None, q=None, page=None):
     return make_request(endpoint="/Api/BanLog/Query", queryDict=queryDict)
 
 
-
 def get_warns(max=None, q=None, page=None):
     max, q, page = validate_query(max=max, q=q, page=page)
 
@@ -88,7 +89,6 @@ def get_warns(max=None, q=None, page=None):
     }
 
     return make_request(endpoint="/Api/Warn/Query", queryDict=queryDict)
-
 
 
 def get_reports(max=None, q=None, page=None):
@@ -119,4 +119,3 @@ def get_activity(max=25, q=None, page=None, staffOnly=True, activityMin=30):
     }
 
     return make_request(endpoint="/Api/Player/Query", queryDict=queryDict)
-

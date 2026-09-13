@@ -19,4 +19,4 @@ A project to display moderation staff statistics for SCP:SL servers using the Ce
 
 ---
 
->This project makes use of the Cedmod API however it is not in endorsed by any of the Cedmod team
+>This project makes use of data from the Cedmod API however it is **not** made by or endorsed by any of the Cedmod team
