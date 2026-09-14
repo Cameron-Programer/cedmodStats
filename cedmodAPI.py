@@ -62,7 +62,7 @@ def make_request(endpoint, queryDict=None):
 
 
 # Note: Get functions are very similar as such I will only explain the first one.
-def get_bans(max=None, q=None, page=None):
+def get_bans(max=10, q=None, page=0):
     # Checking that the params are valid and if not setting them to defaults.
     max, q, page = validate_query(max=max, q=q, page=page)
 
@@ -78,7 +78,7 @@ def get_bans(max=None, q=None, page=None):
     return make_request(endpoint="/Api/BanLog/Query", queryDict=queryDict)
 
 
-def get_warns(max=None, q=None, page=None):
+def get_warns(max=10, q=None, page=0):
     max, q, page = validate_query(max=max, q=q, page=page)
 
     queryDict = {
@@ -91,7 +91,7 @@ def get_warns(max=None, q=None, page=None):
     return make_request(endpoint="/Api/Warn/Query", queryDict=queryDict)
 
 
-def get_reports(max=None, q=None, page=None):
+def get_reports(max=10, q=None, page=0):
     max, q, page = validate_query(max=max, q=q, page=page)
 
     queryDict = {

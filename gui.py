@@ -154,9 +154,10 @@ def display_settings_window(mainWindow):
 
 def refresh_stats():
     print("GUI: Refreshing Stats")
-    cedAnalysis.add_bans_to_staff(staffList)
-    cedAnalysis.add_warns_to_staff(staffList)
-    cedAnalysis.add_playtime_to_staff(staffList)
+    threading.Thread(target=cedAnalysis.add_bans_to_staff, args=((staffList,))).start()
+    threading.Thread(target=cedAnalysis.add_warns_to_staff, args=((staffList,))).start()
+    threading.Thread(target=cedAnalysis.add_playtime_to_staff, args=((staffList,))).start()
+    threading.Thread(target=cedAnalysis.add_reports_to_staff, args=((staffList,))).start()
 
 
 def display_main_menu():

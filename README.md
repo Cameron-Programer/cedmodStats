@@ -5,7 +5,7 @@
 
 A project to display moderation staff statistics for SCP:SL servers using the Cedmod API
 
-![Redacted example image of stats window](readmeImages/exampleStatsImage.png)
+![Redacted example image of stats window](readmeImages/exampleStatsAndMenu.png)
 
 
 | Statistic                  | Status         |
@@ -13,8 +13,8 @@ A project to display moderation staff statistics for SCP:SL servers using the Ce
 | Bans Issued                | Working        |
 | Warns Issued               | Working        |
 | Playtime                   | Working        |
-| Reports Handled            | In development |
-| Reports Ignored            | In development |
+| Reports Handled            | Partly working |
+| Reports Ignored            | Partly working |
 | Time since last connection | In development |
 
 ---

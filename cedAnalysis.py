@@ -123,21 +123,59 @@ def get_dict_of_staff_playtime(max=50):
     return dict(dictList)
 
 
+def get_dict_of_staff_reports(max=100,page=0):
+    reports = cedmodAPI.get_reports(max=max,page=page)
+    listOfReports = reports["players"]
+    dict = {}
+    for i in range(0,len(listOfReports)):
+        report = listOfReports[i]
+        if report["handler"] in dict:
+            dict[report["handler"]][report["status"]] += 1
+        else:
+            dict.update({report["handler"]:[0,0,0,0]})
+            dict[report["handler"]][report["status"]] += 1
+
+    return dict
+
+
+
+
 # ------------ Functions that add stats to staff go below ------------
 
 def add_bans_to_staff(staffList):
+    print("CedA: Starting adding bans to staff list")
     banList = get_list_of_ban_issuers(max=100)
     for i in range(0, len(staffList)):
         staffList[i].set_bans(banList.count(staffList[i].cedmodName) + banList.count(staffList[i].steamID))
+    print("CedA: Finished adding bans to staff list")
 
 
 def add_warns_to_staff(staffList):
+    print("CedA: Starting adding warns to staff list")
     warnList = get_list_of_warn_issuers(max=100)
     for i in range(0, len(staffList)):
         staffList[i].set_warns(warnList.count(staffList[i].cedmodName) + warnList.count(staffList[i].steamID))
+    print("CedA: Finished adding warns to staff list")
 
 
 def add_playtime_to_staff(staffList):
-    PlaytmeDict = get_dict_of_staff_playtime()
+    print("CedA: Starting adding playtime to staff list")
+    playtimeDict = get_dict_of_staff_playtime()
     for i in range(0, len(staffList)):
-        staffList[i].set_playtime(PlaytmeDict[staffList[i].steamID] / 3600)
+        staffList[i].set_playtime(playtimeDict[staffList[i].steamID] / 3600)
+    print("CedA: Finished adding playtime to staff list")
+
+
+def add_reports_to_staff(staffList):
+    print("CedA: Starting adding reports to staff list")
+    reportsDict = get_dict_of_staff_reports()
+    print(reportsDict)
+    for i in range(0,len(staffList)):
+        if staffList[i].cedmodName in reportsDict:
+            staffList[i].set_reports_ignored(reportsDict[staffList[i].cedmodName][2])
+            staffList[i].set_reports_handled(reportsDict[staffList[i].cedmodName][3])
+        else:
+            print("CedA: ERROR Cedmod name has either not handled a report or is different from discord username")
+            staffList[i].set_reports_ignored(-1)
+            staffList[i].set_reports_handled(-1)
+    print("CedA: Finished adding report to staff list")
