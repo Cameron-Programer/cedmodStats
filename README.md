@@ -15,7 +15,7 @@ A project to display moderation staff statistics for SCP:SL servers using the Ce
 | Playtime                   | Working        |
 | Reports Handled            | Partly working |
 | Reports Ignored            | Partly working |
-| Time since last connection | In development |
+| Time since last connection | Working        |
 
 ---
 

@@ -1,5 +1,6 @@
 import re
 import cedmodAPI
+import datetime as dt
 
 
 def extract_steam_id(name):
@@ -89,17 +90,14 @@ def remove_duplicate_names(listOfNames):
     return listOfNames
 
 
-def get_list_of_staff(type=None, responceJson=None):
-    if responceJson is not None:
-        issuers = get_list_of_ban_issuers(responseJson=responceJson)
-        issuers = issuers + get_list_of_staff_steam_names()
-    else:
-        issuers = get_list_of_ban_issuers(fullSteaamName=True)
-        issuers = issuers + get_list_of_staff_steam_names()
+def get_list_of_staff(type=None):
+
+    issuers = get_list_of_ban_issuers(fullSteaamName=True)
+
 
     if type is None:
-        discord = remove_duplicate_names(remove_steam_names(issuers))
-        steam = remove_duplicate_names(remove_discord_names(issuers))
+        discord = list(dict.fromkeys((remove_steam_names(issuers))))
+        steam = get_list_of_staff_steam_names()
         return (discord, steam)
     else:
         type = type.lower()
@@ -123,6 +121,19 @@ def get_dict_of_staff_playtime(max=50):
     return dict(dictList)
 
 
+def get_dict_of_staff_connection_delta(max=50):
+    response = cedmodAPI.get_activity(max=max,staffOnly=True)
+    dictList = []
+    playerList = response["players"]
+    for i in range(0,len(playerList)):
+        lastSeenList = re.search("\\d{4}-\\d{2}-\\d*", string=playerList[i]["lastSeen"]).group().split("-")
+        lastSeenDateTime = dt.datetime(year=int(lastSeenList[0]), month=int(lastSeenList[1]),day=int(lastSeenList[2]))
+        delta = (dt.datetime.now() - lastSeenDateTime).days
+        dictList.append((playerList[i]["userId"],delta))
+
+    return dict(dictList)
+
+
 def get_dict_of_staff_reports(max=100,page=0):
     reports = cedmodAPI.get_reports(max=max,page=page)
     listOfReports = reports["players"]
@@ -136,8 +147,6 @@ def get_dict_of_staff_reports(max=100,page=0):
             dict[report["handler"]][report["status"]] += 1
 
     return dict
-
-
 
 
 # ------------ Functions that add stats to staff go below ------------
@@ -156,6 +165,14 @@ def add_warns_to_staff(staffList):
     for i in range(0, len(staffList)):
         staffList[i].set_warns(warnList.count(staffList[i].cedmodName) + warnList.count(staffList[i].steamID))
     print("CedA: Finished adding warns to staff list")
+
+
+def add_deta_to_staff(staffList):
+    print("CedA: Starting adding delta to staff list")
+    playtimeDict = get_dict_of_staff_connection_delta()
+    for i in range(0, len(staffList)):
+        staffList[i].set_days_since_connection(playtimeDict[staffList[i].steamID])
+    print("CedA: Finished adding delta to staff list")
 
 
 def add_playtime_to_staff(staffList):

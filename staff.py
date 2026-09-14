@@ -9,6 +9,7 @@ class Staff:
     playtime = -1.1
     reportsHandled = -1
     reportsIgnored = -1
+    daysSinceConnection = -1
 
     def set_name(self, name):
         self.name = str(name)
@@ -36,8 +37,11 @@ class Staff:
     def set_reports_ignored(self, reports_ignored):
         self.reportsIgnored = int(reports_ignored)
 
+    def set_days_since_connection(self,days):
+        self.daysSinceConnection = int(days)
+
     def to_string(self):
-        return "Name: "+str(self.name)+"\nSteamID: "+str(self.steamID)+"\nCedmod Name: "+str(self.cedmodName)+"\nBans: "+str(self.bans)+" | Warns: "+str(self.warns)+"\nPlaytime (h): "+str(self.playtime)+"\nReports Handled: "+str(self.reportsHandled)+"\nReports Ignored: "+str(self.reportsIgnored)+"\nDays since last connection: TODO"
+        return "Name: "+str(self.name)+"\nSteamID: "+str(self.steamID)+"\nCedmod Name: "+str(self.cedmodName)+"\nBans: "+str(self.bans)+" | Warns: "+str(self.warns)+"\nPlaytime (h): "+str(self.playtime)+"\nReports Handled: "+str(self.reportsHandled)+"\nReports Ignored: "+str(self.reportsIgnored)+"\nDays since last connection: "+str(self.daysSinceConnection)
 
     def __str__(self):
         return self.name

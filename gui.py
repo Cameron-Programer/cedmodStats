@@ -71,7 +71,7 @@ def popup_new_staff(mainWindow, staffCombobox, listOfStaffCombined):
                                                                                     steamList=steamIDComboBox["values"],
                                                                                     cedmodList=cedmodNameComboBox[
                                                                                         "values"]))
-    abortButton = ttk.Button(content, text="Abort", command=root.destroy)
+    abortButton = ttk.Button(content, text="Cancel", command=root.destroy)
 
     # ---
 
@@ -152,13 +152,19 @@ def display_settings_window(mainWindow):
     closeButton.grid(column=0, row=2)
 
 
-def refresh_stats():
+def refresh_stats(refreshDataButton):
     print("GUI: Refreshing Stats")
-    threading.Thread(target=cedAnalysis.add_bans_to_staff, args=((staffList,))).start()
-    threading.Thread(target=cedAnalysis.add_warns_to_staff, args=((staffList,))).start()
-    threading.Thread(target=cedAnalysis.add_playtime_to_staff, args=((staffList,))).start()
-    threading.Thread(target=cedAnalysis.add_reports_to_staff, args=((staffList,))).start()
+    threadList = [threading.Thread(target=cedAnalysis.add_bans_to_staff, args=((staffList,))),
+    threading.Thread(target=cedAnalysis.add_warns_to_staff, args=((staffList,))),
+    threading.Thread(target=cedAnalysis.add_playtime_to_staff, args=((staffList,))),
+    threading.Thread(target=cedAnalysis.add_deta_to_staff, args=((staffList,))),
+    threading.Thread(target=cedAnalysis.add_reports_to_staff, args=((staffList,)))
+    ]
+    for thread in threadList:
+        thread.start()
 
+    for thread in threadList:
+        thread.join()
 
 def display_main_menu():
     root = Tk()
@@ -175,7 +181,7 @@ def display_main_menu():
 
     showStatsButton = ttk.Button(content, text="Show Stats", command=lambda: display_stats_window(root, staffInfoText))
 
-    refreshDataButton = ttk.Button(content, text="Refresh Data", command=refresh_stats)
+    refreshDataButton = ttk.Button(content, text="Refresh Data", command=lambda: refresh_stats(refreshDataButton))
     settingsButton = ttk.Button(content, text="Settings", command=lambda: display_settings_window(root))
 
     nameLabel = Label(content, text="Cedmod Stats Menu")
