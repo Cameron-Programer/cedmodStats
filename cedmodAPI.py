@@ -5,8 +5,8 @@ import devEnv
 
 # Setting global vars.
 
-domain = "freyasfortress.cmod.app"
-banlist = "26091"
+domain = devEnv.domain
+banlist = devEnv.banList
 apiKey = devEnv.apiKey
 maxDefault = "10"
 

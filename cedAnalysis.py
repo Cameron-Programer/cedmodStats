@@ -149,6 +149,35 @@ def get_dict_of_staff_reports(max=100,page=0):
     return dict
 
 
+def get_list_of_years():
+    array = []
+    #get current year
+    currentYear = dt.datetime.now().year
+    # SCP:SL was launched in 2017
+    launchYear = 2017
+
+    yearsSinceLaunch = (currentYear-launchYear)+1
+
+    for i in range(0,(yearsSinceLaunch)):
+        array.append(currentYear)
+        currentYear -= 1
+
+    return array
+
+
+def get_list_of_months():
+    array = []
+    for i in range(1,13):
+        array.append(i)
+    return array
+
+
+def get_list_of_days(max = 31):
+    array = []
+    for i in range(1,max+1):
+        array.append(i)
+    return array
+
 # ------------ Functions that add stats to staff go below ------------
 
 def add_bans_to_staff(staffList):
