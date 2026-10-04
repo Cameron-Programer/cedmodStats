@@ -18,8 +18,8 @@ A project to display moderation staff statistics for SCP:SL servers using the Ce
 | Time since last connection | Working         |\
 
 <details>
-<summary> * Cedmod usernames are generally the same a discord names, however this is not always the case... </summary>
-When a discord username is updated the cedmod username remains the same and vise versa. This is only an issue for report stats as cedmod records the discord username as the report handler. In these cases an error message is displayed in the console and the stat is not collected. 
+<summary> * Except when a staff members Cedmod username is diffrent from their discord username... </summary>
+Cedmod usernames are generally the same a discord names, however this is not always the case. When a discord username is updated the cedmod username remains the same and vise versa. This is only an issue for report stats as cedmod records the discord username as the report handler. In these cases an error message is displayed in the console and the stat is not collected. 
 <br> This is planned to be fixed by adding another combobox to the "add staff" popup to allow users to select a discord username in the event that the cedmod name is diffrent.
 </details>
 
