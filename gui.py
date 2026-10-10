@@ -7,6 +7,8 @@ from tkinter.font import Font
 import datetime as dt
 from calendar import monthrange
 #Project functions and classes
+import requests.exceptions
+
 import cedAnalysis
 from staff import Staff
 
@@ -57,13 +59,13 @@ def refresh_stats(dateLimit,bans=True,warns=True,reports=True,playtime=True):
     print("GUI: Refreshing Stats")
 
     threadList = []
-    if bans is True:
+    if bans:
         threadList.append(threading.Thread(target=cedAnalysis.add_bans_to_staff, args=((staffList,))))
-    if warns is True:
+    if warns:
         threadList.append(threading.Thread(target=cedAnalysis.add_warns_to_staff, args=((staffList,))))
-    if reports is True:
+    if reports:
         threadList.append(threading.Thread(target=cedAnalysis.add_reports_to_staff, args=((staffList,))))
-    if playtime is True:
+    if playtime:
         threadList.append(threading.Thread(target=cedAnalysis.add_playtime_to_staff, args=((staffList,))))
         threadList.append(threading.Thread(target=cedAnalysis.add_deta_to_staff, args=((staffList,))))
 
@@ -176,13 +178,13 @@ def display_stats_window(mainWidnow, staff:Staff):
 
 
 def updateDayComboList(year,month,dayCombo):
-    if (month == "") or (year == ""):
-        return None
-    year = int(year)
-    month = int(month)
-    weekday,daysInMonth = monthrange(year=year,month=month)
-
-    dayCombo["values"] = cedAnalysis.get_list_of_days(max=daysInMonth)
+    if (month != "") and (year != ""):
+        year = int(year)
+        month = int(month)
+        weekday,daysInMonth = monthrange(year=year,month=month)
+        dayCombo["values"] = cedAnalysis.get_list_of_days(max=daysInMonth)
+    else:
+        print("GUI: Error, invalid month or year ")
 
 
 def display_request_data_window(mainwindow):
