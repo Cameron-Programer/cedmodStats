@@ -60,13 +60,13 @@ def refresh_stats(dateLimit,bans=True,warns=True,reports=True,playtime=True):
 
     threadList = []
     if bans:
-        threadList.append(threading.Thread(target=cedAnalysis.add_bans_to_staff, args=((staffList,))))
+        threadList.append(threading.Thread(target=cedAnalysis.add_bans_to_staff, args=((staffList,dateLimit,))))
     if warns:
-        threadList.append(threading.Thread(target=cedAnalysis.add_warns_to_staff, args=((staffList,))))
+        threadList.append(threading.Thread(target=cedAnalysis.add_warns_to_staff, args=((staffList,dateLimit,))))
     if reports:
-        threadList.append(threading.Thread(target=cedAnalysis.add_reports_to_staff, args=((staffList,))))
+        threadList.append(threading.Thread(target=cedAnalysis.add_reports_to_staff, args=((staffList,dateLimit,))))
     if playtime:
-        threadList.append(threading.Thread(target=cedAnalysis.add_playtime_to_staff, args=((staffList,))))
+        threadList.append(threading.Thread(target=cedAnalysis.add_playtime_to_staff, args=((staffList,dateLimit,))))
         threadList.append(threading.Thread(target=cedAnalysis.add_deta_to_staff, args=((staffList,))))
 
     for thread in threadList:
@@ -94,7 +94,7 @@ def popup_new_staff(mainWindow, staffCombobox, listOfStaffCombined):
                                                                                     staffCombobox=staffCombobox,
                                                                                     root=root))
 
-    abortButton = ttk.Button(content, text="Cancel", command=root.destroy)
+    abortButton = ttk.Button(content, text="Close", command=root.destroy)
 
     # ---
 

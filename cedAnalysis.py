@@ -1,4 +1,5 @@
 import re
+from time import sleep
 import cedmodAPI
 import datetime as dt
 
@@ -44,6 +45,39 @@ def get_list_of_ban_issuers(max=50, page=None, responseJson=None, fullSteaamName
     return issuerNames
 
 
+def get_list_of_ban_issuers_to_date(date, fullSteaamName=False):
+    #This is basically the same as the get_list_of_ban_issuers function however it will get the banlist up to the date parameter rather than using max or page.
+    issuerNames = []
+    dateNotMet = True
+    page = 0
+    while True:
+        responseJson = cedmodAPI.get_bans(max=100,page=page)
+        if fullSteaamName:
+            for i in range(0, len(responseJson["players"])):
+                if dt.datetime.strptime(
+                        responseJson["players"][i]["timeStamp"].split("T")[0],"%Y-%m-%d") < date:
+                    #Checking if the date for the slected ban is before the maxdate, if it is we return the issuer names
+                    return issuerNames
+                issuerNames.append(responseJson["players"][i]["issuer"])
+
+
+        else:
+            for i in range(0, len(responseJson["players"])):
+                if dt.datetime.strptime(responseJson["players"][i]["timeStamp"].split("T")[0],"%Y-%m-%d") < date:
+                    return issuerNames
+                issuerNames.append(extract_steam_id(responseJson["players"][i]["issuer"]))
+
+        page += 1
+        # If we have not found a ban that was issued before the selected date we go to the next page
+
+
+        # Enforcing a 5-second delay between request after requesting 5 pages of bans to avoid flooding the cedmod servers
+        if page > 5:
+            sleep(5)
+
+
+
+
 def get_list_of_report_handlers(status=-1, responseJson=None):
     handlerNames = []
 
@@ -74,6 +108,27 @@ def get_list_of_warn_issuers(max=None, responseJson=None):
     return issuerNames
 
 
+def get_list_of_warn_issuers_to_date(date,max=100,page=0):
+    issuerNames = []
+
+    while True:
+
+        responseJson = cedmodAPI.get_warns(max=max,page=page)
+
+        for i in range(0, len(responseJson["players"])):
+            if dt.datetime.strptime(responseJson["players"][i]["timeStamp"].split("T")[0], "%Y-%m-%d") < date:
+                # Checking if date on warn is from before the selected date
+                return issuerNames
+            issuerNames.append(responseJson["players"][i]["issuer"])
+
+        page +=1
+        # If we have not found a warn that was issued before the selected date we go to the next page
+
+        # Enforcing a 5-second delay between request after requesting 5 pages of warns to avoid flooding the cedmod servers
+        if page > 5:
+            sleep(5)
+
+
 def get_list_of_staff_steam_names(max=50):
     namesList = []
     response = cedmodAPI.get_activity(max=max, staffOnly=True)
@@ -92,7 +147,7 @@ def remove_duplicate_names(listOfNames):
 
 def get_list_of_staff(type=None):
 
-    issuers = get_list_of_ban_issuers(fullSteaamName=True)
+    issuers = get_list_of_warn_issuers(max=100)
 
 
     if type is None:
@@ -111,8 +166,8 @@ def get_list_of_staff(type=None):
         return steam
 
 
-def get_dict_of_staff_playtime(max=50):
-    response = cedmodAPI.get_activity(max=max)
+def get_dict_of_staff_playtime(max=50,activityMin=30):
+    response = cedmodAPI.get_activity(max=max,activityMin=activityMin)
     playerList = response["players"]
     dictList = []
     for i in range(0, len(playerList)):
@@ -148,6 +203,33 @@ def get_dict_of_staff_reports(max=100,page=0):
 
     return dict
 
+def get_dict_of_staff_reports_to_date(date,max=100,page = 0):
+    dict = {}
+
+    while True:
+
+        reports = cedmodAPI.get_reports(max=max,page=page)
+        listOfReports = reports["players"]
+
+        for i in range(0,len(listOfReports)):
+            report = listOfReports[i]
+            if dt.datetime.strptime(report["created"].split("T")[0], "%Y-%m-%d") < date:
+                #Checking if the date on the report is from before the selected date
+                return dict
+            elif report["handler"] in dict:
+                dict[report["handler"]][report["status"]] += 1
+            else:
+                dict.update({report["handler"]:[0,0,0,0]})
+                dict[report["handler"]][report["status"]] += 1
+
+        page +=1
+        # If we have not found a report that was created before the selected date we go to the next page
+
+
+        # Enforcing a 5-second delay between request after requesting 5 pages of reports to avoid flooding the cedmod servers
+        if page > 5:
+            sleep(5)
+
 
 def get_list_of_years():
     array = []
@@ -180,17 +262,17 @@ def get_list_of_days(max = 31):
 
 # ------------ Functions that add stats to staff go below ------------
 
-def add_bans_to_staff(staffList):
+def add_bans_to_staff(staffList,date):
     print("CedA: Starting adding bans to staff list")
-    banList = get_list_of_ban_issuers(max=100)
+    banList = get_list_of_ban_issuers_to_date(date=date)
     for i in range(0, len(staffList)):
         staffList[i].set_bans(banList.count(staffList[i].cedmodName) + banList.count(staffList[i].steamID))
     print("CedA: Finished adding bans to staff list")
 
 
-def add_warns_to_staff(staffList):
+def add_warns_to_staff(staffList,date):
     print("CedA: Starting adding warns to staff list")
-    warnList = get_list_of_warn_issuers(max=100)
+    warnList = get_list_of_warn_issuers_to_date(date=date)
     for i in range(0, len(staffList)):
         staffList[i].set_warns(warnList.count(staffList[i].cedmodName) + warnList.count(staffList[i].steamID))
     print("CedA: Finished adding warns to staff list")
@@ -204,24 +286,24 @@ def add_deta_to_staff(staffList):
     print("CedA: Finished adding delta to staff list")
 
 
-def add_playtime_to_staff(staffList):
+def add_playtime_to_staff(staffList,date):
+    days = (dt.datetime.now() - date).days
     print("CedA: Starting adding playtime to staff list")
-    playtimeDict = get_dict_of_staff_playtime()
+    playtimeDict = get_dict_of_staff_playtime(activityMin=days)
     for i in range(0, len(staffList)):
         staffList[i].set_playtime(playtimeDict[staffList[i].steamID] / 3600)
     print("CedA: Finished adding playtime to staff list")
 
 
-def add_reports_to_staff(staffList):
+def add_reports_to_staff(staffList,date):
     print("CedA: Starting adding reports to staff list")
-    reportsDict = get_dict_of_staff_reports()
-    print(reportsDict)
+    reportsDict = get_dict_of_staff_reports_to_date(date=date)
     for i in range(0,len(staffList)):
         if staffList[i].cedmodName in reportsDict:
             staffList[i].set_reports_ignored(reportsDict[staffList[i].cedmodName][2])
             staffList[i].set_reports_handled(reportsDict[staffList[i].cedmodName][3])
         else:
             print("CedA: ERROR Cedmod name has either not handled a report or is different from discord username")
-            staffList[i].set_reports_ignored(-1)
-            staffList[i].set_reports_handled(-1)
+            staffList[i].set_reports_ignored(-2)
+            staffList[i].set_reports_handled(-2)
     print("CedA: Finished adding report to staff list")
